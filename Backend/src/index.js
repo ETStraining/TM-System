@@ -7,12 +7,9 @@ console.log('DATABASE URI:', process.env.DATABASE);  // This should log your Mon
 
 const PORT = process.env.PORT || 3000;
 
-mongoose.connect(process.env.DATABASE, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch((err) => console.error('MongoDB connection error:', err));
+mongoose.connect(process.env.DATABASE)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Could not connect to MongoDB...', err));
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
