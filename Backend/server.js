@@ -1,7 +1,9 @@
-const express = require('express');
+import express from 'express';
 const app = express();
-const mongoose = require('mongoose');
-require('dotenv').config();
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import allRoutes from "./routes/index.js";
+dotenv.config();
 
 console.log('DATABASE URI:', process.env.DATABASE);  // This should log your MongoDB URI
 
@@ -14,6 +16,8 @@ mongoose.connect(process.env.DATABASE)
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
+// API routes
+app.use("/api/v1", allRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
