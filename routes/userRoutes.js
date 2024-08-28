@@ -1,13 +1,13 @@
 import express from "express";
 import {
-  SignIn,
+  LogIn,
   SignUp,
   getUsers,
   updateUser
 } from "../controllers/userController.js";
 const userRoute = express.Router();
 userRoute.get('/', getUsers);
-userRoute.post("/signin", SignIn);
+userRoute.post("/login", LogIn);
 userRoute.put('/:id', updateUser);
 userRoute.post("/signup", SignUp);
 

@@ -1,6 +1,8 @@
 import UserModel from '../models/userModel.js';
 import bcryptjs from 'bcryptjs';
 import sendEmail from '../middlewares/sendEmail.js';
+// import jwt from 'jsonWebTokenError';
+import jwt from 'jsonwebtoken';
 
 export const SignUp = async (req, res, next) => {
   try {
@@ -37,9 +39,9 @@ export const SignUp = async (req, res, next) => {
   }
 };
 
-export const SignIn = async (req, res, next) => {
+export const LogIn = async (req, res, next) => {
   const { email, Password } = req.body;
-  console.log("SignIn request received with body:", req.body); // Add logging for debugging
+  console.log("LogIn request received with body:", req.body); // Add logging for debugging
   try {
     const validUser = await UserModel.findOne({ email: email });
 
@@ -53,8 +55,14 @@ export const SignIn = async (req, res, next) => {
     if (!validPassword) {
       return res.status(401).json({ message: "Invalid username or password" });
     }
+      // Generate JWT token
+      const token = jwt.sign(
+        { userId: validUser._id, email: validUser.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' } // Token expires in 1 hour
+      );
 
-    res.status(200).json({ message: "You signed in successfully", user: validUser });
+    res.status(200).json({ message: "You loged in successfully", user: validUser });
     
   } catch (error) {
     console.error(error);
