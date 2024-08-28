@@ -1,0 +1,16 @@
+# Node modules
+node_modules/
+package-lock.json
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# Build outputs
+dist/
+build/
+
+# OS-specific files
+.DS_Store
+Thumbs.db

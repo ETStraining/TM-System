@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import allRoutes from "./routes/index.js";
 dotenv.config();
 
+app.use(express.json());
 console.log('DATABASE URI:', process.env.DATABASE);  // This should log your MongoDB URI
 
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 // API routes
+
 app.use("/api/v1", allRoutes);
 
 app.listen(PORT, () => {

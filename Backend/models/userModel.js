@@ -9,21 +9,17 @@ const UserSchema = new Schema({
         type: String, 
         required: true,
     },
-    
-    
+  
     email : { type: String, require: true, index:true, unique:true,sparse:true},
     Password: {
         type: String, 
         required: true,
     },
-    
-
-
-    
+  
     role:{
         type: String,
-        enum: ["customer","admin","executive"],
-        default: "customer"
+        enum: ["passenger","admin","executive"],
+        default: "passenger"
 
     },
 
