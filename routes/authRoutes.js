@@ -67,7 +67,10 @@ router.post('/signup', (req, res) => {
  */
 router.post('/login', (req, res) => {
   // Handle login logic here
-  res.status(200).json({ message: 'Login successful' });
+  res.status(200).json({ message: 'Login successfully' });
 });
-
+router.put('/:id', (req, res) => {
+  // Handle update user logic here
+  res.status(200).json({ message: 'User updated successfully' });
+});
 export default router; 
