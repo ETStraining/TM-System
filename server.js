@@ -3,9 +3,9 @@ const app = express();
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import allRoutes from "./routes/index.js";
-import swaggerJsdoc  from "swagger-jsdoc";
+import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express"
-
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
@@ -21,27 +21,24 @@ mongoose.connect(process.env.DATABASE)
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
+
 // API routes
 
 app.use("/api/v1", allRoutes);
+app.use("/api/v1/auth", authRoutes);
+
 
 // Swagger setup
-
 const swaggerOptions = {
   definition: {
-    openapi: "3.0.0",
+    openapi: '3.0.0',
     info: {
-      title: "Tickets Management System API",
-      version: "1.0.0",
-      description: "A simple API for managing tickets operations.",
+      title: 'Ticket Management System API',
+      version: '1.0.0',
+      description: 'API documentation for the Ticket Management System',
     },
-    servers: [
-      {
-        url: "http://localhost:3000/api/v1",
-      },
-    ],
   },
-  apis: ["./routes/*.js"],
+  apis: ['./routes/*.js'], // Adjust the path to your route files
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
