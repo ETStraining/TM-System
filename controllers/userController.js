@@ -6,29 +6,42 @@ import jwt from 'jsonwebtoken';
 // Sign Up Function
 export const SignUp = async (req, res) => {
   try {
-    const { FullName, Email, TelphoneNumber, Password, ConfirmPassword } = req.body;
+    const { fullName, email, phoneNumber, password, confirmPassword } = req.body;
 
-    if (Password !== ConfirmPassword) {
+    if (!fullName || !email || !phoneNumber || !password || !confirmPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    const userExists = await UserModel.findOne({ Email: Email.toLowerCase() });
-    if (userExists) {
-      return res.status(401).json({ message: "User with this email already exists" });
+    const normalizedEmail = email ? email.toLowerCase() : null;
+
+    if (normalizedEmail) {
+      const userExists = await UserModel.findOne({ Email: normalizedEmail });
+      if (userExists) {
+        return res.status(401).json({ message: "User with this email already exists" });
+      }
+    } else {
+      return res.status(400).json({ message: "Email is required" });
     }
 
     // Hash the password
-    const hashedPassword = await bcryptjs.hash(Password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
 
+    // Create and save the new user
     const newUser = new UserModel({
-      FullName,
-      Email: Email.toLowerCase(),
-      TelphoneNumber,
-      Password: hashedPassword
+      FullName: fullName,
+      Email: normalizedEmail,
+      TelphoneNumber: phoneNumber,
+      Password: hashedPassword,
     });
 
     const savedUser = await newUser.save();
+
     return res.status(200).json({ message: "Account created!", savedUser });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
@@ -36,34 +49,44 @@ export const SignUp = async (req, res) => {
 };
 
 // Log In Function
-export const LogIn = async (req, res) => {
-  const { Email, Password } = req.body;
 
+export const LogIn = async (req, res) => {
   try {
-    const user = await UserModel.findOne({ Email: Email.toLowerCase() });
+    const { Email, Password } = req.body;
+
+    if (!Email || !Password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    const normalizedEmail = Email.toLowerCase();
+    const user = await UserModel.findOne({ Email: normalizedEmail });
+
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
+    console.log('User Password (Hash):', user.Password); // Debugging line
     const isMatch = await user.comparePassword(Password);
+    console.log('Is Password Match:', isMatch); // Debugging line
+
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid password" });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { userId: user._id, email: user.Email },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' } // Token expires in 1 hour
+      { expiresIn: '1h' }
     );
 
     res.status(200).json({ message: "Logged in successfully", user, token });
-    
+
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // Get Users Function
 export const getUsers = async (req, res) => {

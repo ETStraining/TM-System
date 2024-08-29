@@ -25,33 +25,24 @@ const UserSchema = new Schema({
     Password: {
         type: String,
         required: true,
-    },
-    ConfirmPassword: {
-        type: String,
-        required: true,
-        validate: {
-            validator: function(v) {
-                return this.Password === v;
-            },
-            message: 'Passwords do not match.'
-        }
     }
 }, { timestamps: true });
 
 // Middleware to hash the password before saving
 UserSchema.pre('save', async function(next) {
     if (this.isModified('Password')) {
-        this.Password = await bcrypt.hash(this.Password, 10);
+        const hashedPassword = await bcrypt.hash(this.Password, 10);
+        console.log('Hashed Password:', hashedPassword); // Debugging line
+        this.Password = hashedPassword;
     }
-    // Remove ConfirmPassword before saving
-    this.ConfirmPassword = undefined;
     next();
 });
 
 // Method to compare hashed passwords
 UserSchema.methods.comparePassword = async function(candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.Password);
+    const isMatch = await bcrypt.compare(candidatePassword, this.Password);
+    console.log('Password Match:', isMatch); // Debugging line
+    return isMatch;
 };
-
 const UserModel = model('User', UserSchema);
 export default UserModel;
