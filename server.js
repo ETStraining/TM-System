@@ -1,32 +1,34 @@
 import express from 'express';
-const app = express();
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import allRoutes from "./routes/index.js";
-import swaggerJsdoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express"
-import authRoutes from "./routes/authRoutes.js";
+import bodyParser from 'body-parser';
+import allRoutes from './routes/index.js';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
-app.use(express.json());
-console.log('DATABASE URI:', process.env.DATABASE);  // This should log your MongoDB URI
-
+const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+
+console.log('DATABASE URI:', process.env.DATABASE); // Log MongoDB URI
 
 mongoose.connect(process.env.DATABASE)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB...', err));
 
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
+// Middleware to log requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
 });
 
 // API routes
-
-app.use("/api/v1", allRoutes);
-app.use("/api/v1/auth", authRoutes);
-
+app.use('/api/v1', allRoutes);
+app.use('/api/v1/auth', authRoutes);
 
 // Swagger setup
 const swaggerOptions = {
@@ -43,6 +45,12 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// 404 Handler
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

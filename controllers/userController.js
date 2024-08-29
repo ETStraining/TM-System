@@ -1,107 +1,98 @@
 import UserModel from '../models/userModel.js';
 import bcryptjs from 'bcryptjs';
 import sendEmail from '../middlewares/sendEmail.js';
-// import jwt from 'jsonWebTokenError';
 import jwt from 'jsonwebtoken';
 
-export const SignUp = async (req, res, next) => {
+// Sign Up Function
+export const SignUp = async (req, res) => {
   try {
-    const { FirstName,LastName, email, Password} = req.body;
+    const { FullName, Email, TelphoneNumber, Password, ConfirmPassword } = req.body;
 
-    console.log("SignUp request received with body:", req.body); // Add logging for debugging
+    if (Password !== ConfirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
 
-    const userExists = await UserModel.findOne({ email: email });
-    
+    const userExists = await UserModel.findOne({ Email: Email.toLowerCase() });
     if (userExists) {
-      return res.status(401).json("User with this email already exists");
-    } else {
-      const hashedPassword = bcryptjs.hashSync(Password, 10);
-
-      const newUser = new UserModel({
-        FirstName: FirstName,
-        LastName: LastName,
-        email: email,
-        Password: hashedPassword,
-      });
-
-      const savedUser = await newUser.save();
-
-      // Use the Name to personalize the email
-      const subject = `Welcome to OpportunityTank`;
-      const message = `Dear ${FirstName},\n\nYou have successfully created your account! Thank you for joining the large community of OpportunityTank. We are happy to welcome you aboad!\n\n\nIf you need to continue as an employer reach out to this email for more clarification email:kl@opportunitytank.com`;
-
-      await sendEmail(email, subject, message);
-      return res.status(200).json({ message: "Account created!", savedUser });
+      return res.status(401).json({ message: "User with this email already exists" });
     }
+
+    // Hash the password
+    const hashedPassword = await bcryptjs.hash(Password, 10);
+
+    const newUser = new UserModel({
+      FullName,
+      Email: Email.toLowerCase(),
+      TelphoneNumber,
+      Password: hashedPassword
+    });
+
+    const savedUser = await newUser.save();
+    return res.status(200).json({ message: "Account created!", savedUser });
   } catch (error) {
     console.error(error);
-    res.status(500).json(error.message);
+    res.status(500).json({ message: error.message });
   }
 };
 
-export const LogIn = async (req, res, next) => {
-  const { email, Password } = req.body;
-  console.log("LogIn request received with body:", req.body); // Add logging for debugging
+// Log In Function
+export const LogIn = async (req, res) => {
+  const { Email, Password } = req.body;
+
   try {
-    const validUser = await UserModel.findOne({ email: email });
-
-    if (!validUser) {
-      return res.status(401).json({ message: "Invalid username or password" });
+    const user = await UserModel.findOne({ Email: Email.toLowerCase() });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Ensure the password field in the schema is correctly named (case-sensitive)
-    const validPassword = bcryptjs.compareSync(Password, validUser.Password); // Make sure it's `validUser.Password` not `validUser.password`
-    
-    if (!validPassword) {
-      return res.status(401).json({ message: "Invalid username or password" });
+    const isMatch = await user.comparePassword(Password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
     }
-      // Generate JWT token
-      const token = jwt.sign(
-        { userId: validUser._id, email: validUser.email },
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' } // Token expires in 1 hour
-      );
 
-    res.status(200).json({ message: "You loged in successfully", user: validUser });
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.Email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' } // Token expires in 1 hour
+    );
+
+    res.status(200).json({ message: "Logged in successfully", user, token });
     
   } catch (error) {
     console.error(error);
-    res.status(500).send(error.message);
+    res.status(500).json({ message: error.message });
   }
 };
 
-export const getUsers = async (req, res, next) => {
+// Get Users Function
+export const getUsers = async (req, res) => {
   try {
     const allUsers = await UserModel.find({});
-    if(!allUsers || allUsers.length === 0){
-      return res.status(404).json({
-        message: "No users found!"
-      });
+    if (!allUsers || allUsers.length === 0) {
+      return res.status(404).json({ message: "No users found!" });
     } else {
-      res.status(200).send({
-        allUsers
-      });
+      res.status(200).json({ allUsers });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send(error);
+    res.status(500).json({ message: error.message });
   }
 }
 
+// Update User Function
 export const updateUser = async (req, res) => {
   try {
-    console.log(req.body, req.params.id);
-    var updatedUser = await UserModel.findByIdAndUpdate({ _id: req.params.id }, req.body);
-    if(updatedUser === null){
-      return res.status(404).json({message: "User not found"}) 
+    const updatedUser = await UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
     }
-    var user = await UserModel.findById(updatedUser._id);
     res.status(201).json({
       message: 'User updated successfully',
-      user
+      user: updatedUser
     });
   } catch (error) {
     console.log(error);
-    res.status(500).send(error.message);
+    res.status(500).json({ message: error.message });
   }
 };
