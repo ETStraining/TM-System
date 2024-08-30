@@ -6,15 +6,15 @@ import jwt from 'jsonwebtoken';
 // Sign Up Function
 export const SignUp = async (req, res) => {
   try {
-    const { fullName, email, phoneNumber, password, confirmPassword } = req.body;
+    const { fullName, email, phoneNumber, password } = req.body;
 
-    if (!fullName || !email || !phoneNumber || !password || !confirmPassword) {
+    if (!fullName || !email || !phoneNumber || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
+    // if (password !== confirmPassword) {
+    //   return res.status(400).json({ message: "Passwords do not match" });
+    // }
 
     const normalizedEmail = email ? email.toLowerCase() : null;
 
@@ -59,7 +59,11 @@ export const LogIn = async (req, res) => {
     }
 
     const normalizedEmail = email.toLowerCase();
-    const user = await UserModel.findOne({ email: normalizedEmail });
+    console.log("Normalized email", normalizedEmail);
+    
+    const user = await UserModel.findOne({ normalizedEmail: normalizedEmail });
+
+console.log("our user", user);
 
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
