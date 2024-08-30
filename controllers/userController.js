@@ -52,29 +52,29 @@ export const SignUp = async (req, res) => {
 
 export const LogIn = async (req, res) => {
   try {
-    const { Email, Password } = req.body;
+    const { email, password } = req.body;
 
-    if (!Email || !Password) {
+    if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
-    const normalizedEmail = Email.toLowerCase();
-    const user = await UserModel.findOne({ Email: normalizedEmail });
+    const normalizedEmail = email.toLowerCase();
+    const user = await UserModel.findOne({ email: normalizedEmail });
 
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    console.log('User Password (Hash):', user.Password); // Debugging line
-    const isMatch = await user.comparePassword(Password);
-    console.log('Is Password Match:', isMatch); // Debugging line
+    console.log('User Password (Hash):', user.password); 
+    const isMatch = await user.comparePassword(password);
+    console.log('Is Password Match:', isMatch); 
 
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid password" });
     }
 
     const token = jwt.sign(
-      { userId: user._id, email: user.Email },
+      { userId: user._id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );

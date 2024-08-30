@@ -5,13 +5,15 @@ import bodyParser from 'body-parser';
 import allRoutes from './routes/index.js';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import authRoutes from './routes/authRoutes.js';
+import path from 'path';
+// import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const _dirname = path.resolve ();
 app.use(express.json());
 
 console.log('DATABASE URI:', process.env.DATABASE); // Log MongoDB URI
@@ -28,19 +30,37 @@ app.use((req, res, next) => {
 
 // API routes
 app.use('/api/v1', allRoutes);
-app.use('/api/v1/auth', authRoutes);
+// app.use('/api/v1/auth', authRoutes);
 
 // Swagger setup
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
+      
       title: 'Ticket Management System API',
       version: '1.0.0',
       description: 'API documentation for the Ticket Management System',
     },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Development server',
+      },
+     {
+       url: 'https://tm-system-backend.onrender.com',
+       description: 'Production server',
+     } 
+      
+    ]
+    
+    
   },
-  apis: ['./routes/*.js'], // Adjust the path to your route files
+  // apis: ['./routes/*.js'], // Adjust the path to your route files
+
+  apis: [
+    path.resolve (_dirname , "routes", "userRoutes.js"),
+  ]
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
