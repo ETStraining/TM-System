@@ -6,15 +6,15 @@ import jwt from 'jsonwebtoken';
 // Sign Up Function
 export const SignUp = async (req, res) => {
   try {
-    const { fullName, email, phoneNumber, password, confirmPassword } = req.body;
+    const { fullName, email, phoneNumber, password } = req.body;
 
-    if (!fullName || !email || !phoneNumber || !password || !confirmPassword) {
+    if (!fullName || !email || !phoneNumber || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
+    // if (password !== confirmPassword) {
+    //   return res.status(400).json({ message: "Passwords do not match" });
+    // }
 
     const normalizedEmail = email ? email.toLowerCase() : null;
 
@@ -52,29 +52,33 @@ export const SignUp = async (req, res) => {
 
 export const LogIn = async (req, res) => {
   try {
-    const { Email, Password } = req.body;
+    const { email, password } = req.body;
 
-    if (!Email || !Password) {
+    if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
-    const normalizedEmail = Email.toLowerCase();
-    const user = await UserModel.findOne({ Email: normalizedEmail });
+    const normalizedEmail = email.toLowerCase();
+    console.log("Normalized email", normalizedEmail);
+    
+    const user = await UserModel.findOne({ normalizedEmail: normalizedEmail });
+
+console.log("our user", user);
 
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    console.log('User Password (Hash):', user.Password); // Debugging line
-    const isMatch = await user.comparePassword(Password);
-    console.log('Is Password Match:', isMatch); // Debugging line
+    console.log('User Password (Hash):', user.password); 
+    const isMatch = await user.comparePassword(password);
+    console.log('Is Password Match:', isMatch); 
 
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid password" });
     }
 
     const token = jwt.sign(
-      { userId: user._id, email: user.Email },
+      { userId: user._id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
