@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import allRoutes from './routes/index.js';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import cors from 'cors';
 import path from 'path';
 // import authRoutes from './routes/authRoutes.js';
 
@@ -15,7 +16,7 @@ const PORT = process.env.PORT || 3000;
 
 const _dirname = path.resolve ();
 app.use(express.json());
-
+app.use (cors({origin:'*'}));
 console.log('DATABASE URI:', process.env.DATABASE); // Log MongoDB URI
 
 mongoose.connect(process.env.DATABASE)
@@ -56,11 +57,11 @@ const swaggerOptions = {
     
     
   },
-  // apis: ['./routes/*.js'], // Adjust the path to your route files
+  apis: ['./routes/*.js'], 
 
-  apis: [
-    path.resolve (_dirname , "routes", "userRoutes.js"),
-  ]
+  // apis: [
+  //   path.resolve (_dirname , "routes", "userRoutes.js"),
+  // ]
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
