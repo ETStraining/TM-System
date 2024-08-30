@@ -48,8 +48,8 @@ export const SignUp = async (req, res) => {
   }
 };
 
-// Log In Function
 
+// Log In Function
 export const LogIn = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -59,19 +59,14 @@ export const LogIn = async (req, res) => {
     }
 
     const normalizedEmail = email.toLowerCase();
-    console.log("Normalized email", normalizedEmail);
-    
-    const user = await UserModel.findOne({ normalizedEmail: normalizedEmail });
-
-console.log("our user", user);
+    const user = await UserModel.findOne({ Email: normalizedEmail });
 
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    console.log('User Password (Hash):', user.password); 
-    const isMatch = await user.comparePassword(password);
-    console.log('Is Password Match:', isMatch); 
+    // Check if the password matches
+    const isMatch = await bcryptjs.compare(password, user.Password);
 
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid password" });
