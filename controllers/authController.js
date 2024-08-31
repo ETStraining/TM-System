@@ -3,7 +3,7 @@ import bcryptjs from ('bcrypts');
 import jwt from ('jwt');
 import sendEmail from '../middlewares/sendEmail';
 import UserModel from '../models/userModel';
-const errorHandler = require('../errors/errorHandler');
+
 require('dotenv').config()
 
 const SignUp = async (req, res, next) => {
