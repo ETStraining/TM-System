@@ -2,31 +2,13 @@ import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const UserSchema = new Schema({
-    FullName: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    Email: {
-        type: String,
-        required: true,
-        index: true,
-        unique: true,
-        sparse: true,
-        lowercase: true,
-        trim: true,
-        match: [/.+@.+\..+/, 'Please enter a valid email address']
-    },
-    TelphoneNumber: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    Password: {
-        type: String,
-        required: true,
-    }
-}, { timestamps: true });
+    FullName: { type: String, required: true },
+    Email: { type: String, required: true, unique: true },
+    TelphoneNumber: { type: String, required: true },
+    Password: { type: String, required: true },
+    role: { type: String, enum: ['user', 'admin'], default: 'user' }, // default to 'user'
+    createdAt: { type: Date, default: Date.now },
+  });
 
 // Middleware to hash the password before saving
 UserSchema.pre('save', async function(next) {

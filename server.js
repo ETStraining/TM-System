@@ -59,9 +59,6 @@ const swaggerOptions = {
   },
   apis: ['./routes/*.js'], 
 
-  // apis: [
-  //   path.resolve (_dirname , "routes", "userRoutes.js"),
-  // ]
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
