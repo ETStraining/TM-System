@@ -13,7 +13,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /tickets:
+ * api/v1/tickets:
  *   post:
  *     summary: Create a new ticket
  *     description: Create a new ticket with the provided details
@@ -35,12 +35,7 @@ const router = express.Router();
  *                 type: string
  *               dropOffLocation:
  *                 type: string
- *               createdBy:
- *                 type: string
- *                 format: uuid
- *               status:
- *                 type: string
- *                 enum: [New, On-Going, Resolved, Closed]
+ *            
  *               dueDate:
  *                 type: string
  *                 format: date

@@ -1,4 +1,6 @@
-const authMiddleware = require('./ticketAuth');
+
+import authMiddleware from './ticketAuth.js';
+
 
 const authorizeRole = (roles) => (req, res, next) => {
     if (!roles.includes(req.user.role)) {
@@ -7,4 +9,4 @@ const authorizeRole = (roles) => (req, res, next) => {
     next();
 };
 
-module.exports = authorizeRole;
+export default authorizeRole;
