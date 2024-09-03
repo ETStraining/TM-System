@@ -49,7 +49,7 @@ const swaggerOptions = {
         description: 'Development server',
       },
      {
-       url: 'https://tm-system-backend.onrender.com',
+       url: 'https://tm-system-1.onrender.com',
        description: 'Production server',
      } 
       
@@ -58,6 +58,7 @@ const swaggerOptions = {
     
   },
   apis: ['./routes/*.js'], 
+  
 
 };
 

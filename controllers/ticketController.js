@@ -12,7 +12,7 @@ export const  createTicket = async (req, res) => {
             pickupTime,
             pickupLocation,
             dropOffLocation,
-            createdBy: req.user._id, // Use the authenticated user's ID
+            createdBy: req.user.userId, // Use the authenticated user's ID
             dueDate,
         });
 
@@ -24,17 +24,25 @@ export const  createTicket = async (req, res) => {
 };
 
 // Get a ticket by ID
+
 export const getTicketById = async (req, res) => {
     try {
+        console.log('getTicketById triggered with ID:', req.params.id); // Log the ID being requested
+        
         const ticket = await Ticket.findById(req.params.id).populate('createdBy', 'fullName email');
         if (!ticket) {
+            console.log('Ticket not found');
             return res.status(404).json({ message: 'Ticket not found' });
         }
+
+        console.log('Ticket found:', ticket);
         res.json(ticket);
     } catch (error) {
+        console.error('Error fetching ticket:', error); // Log the error
         res.status(500).json({ message: 'Error fetching ticket', error });
     }
 };
+
 
 // Update a ticket
 export const updateTicket = async (req, res) => {
