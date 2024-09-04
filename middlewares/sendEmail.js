@@ -9,7 +9,7 @@ const sendEmail = async (email, subject, text) => {
             service: 'gmail',
             auth: {
                 user: process.env.EMAIL_USER, // Use environment variable
-                pass: process.env.EMAIL_PASS, // Use environment variable
+                pass: process.env.EMAIL_PASS, 
                 host: 'smtp.gmail.com',
             },
             tls: {
@@ -18,7 +18,7 @@ const sendEmail = async (email, subject, text) => {
         });
 
         const options = {
-            from: process.env.EMAIL_USER, // Use environment variable
+            from: process.env.EMAIL_USER, 
             to: email,
             subject: subject,
             text: text

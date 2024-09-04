@@ -6,8 +6,8 @@ import {
   deleteTicket,
   getAllTickets
 } from '../controllers/ticketController.js';
-import authMiddleware from '../middlewares/ticketAuth.js'; // Adjust the path if needed
-import authorizeRole from '../middlewares/authRole.js'; // Adjust the path if needed
+import authMiddleware from '../middlewares/ticketAuth.js'; 
+import authorizeRole from '../middlewares/authRole.js'; 
 
 const router = express.Router();
 
@@ -45,11 +45,11 @@ const router = express.Router();
  *       400:
  *         description: Bad request
  */
-router.post('/tickets', authMiddleware, createTicket);
+router.post('/createTicket', authMiddleware, createTicket);
 
 /**
  * @swagger
- * /tickets/{id}:
+ * api/v1/tickets/{id}:
  *   get:
  *     summary: Get a ticket by ID
  *     description: Retrieve details of a specific ticket by its ID
@@ -68,11 +68,11 @@ router.post('/tickets', authMiddleware, createTicket);
  *       404:
  *         description: Ticket not found
  */
-router.get('/tickets/:id', authMiddleware, getTicketById);
+router.get('/tickets/:id', getTicketById);
 
 /**
  * @swagger
- * /tickets/{id}:
+ * api/v1/tickets/{id}:
  *   put:
  *     summary: Update a ticket
  *     description: Update details of a specific ticket by its ID
@@ -122,7 +122,7 @@ router.put('/tickets/:id', authMiddleware, authorizeRole(['admin', 'support']), 
 
 /**
  * @swagger
- * /tickets/{id}:
+ * api/v1/tickets/{id}:
  *   delete:
  *     summary: Delete a ticket
  *     description: Remove a specific ticket by its ID
@@ -145,7 +145,7 @@ router.delete('/tickets/:id', authMiddleware, authorizeRole(['admin', 'support']
 
 /**
  * @swagger
- * /tickets:
+ * api/v1/tickets:
  *   get:
  *     summary: Get all tickets
  *     description: Retrieve a list of all tickets with optional filters
