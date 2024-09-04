@@ -6,8 +6,8 @@ import {
   deleteTicket,
   getAllTickets
 } from '../controllers/ticketController.js';
-import authMiddleware from '../middlewares/ticketAuth.js'; // Adjust the path if needed
-import authorizeRole from '../middlewares/authRole.js'; // Adjust the path if needed
+import authMiddleware from '../middlewares/ticketAuth.js'; 
+import authorizeRole from '../middlewares/authRole.js'; 
 
 const router = express.Router();
 

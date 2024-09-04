@@ -7,13 +7,24 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import path from 'path';
-// import authRoutes from './routes/authRoutes.js';
+import sendEmail from './middlewares/sendEmail.js';
 
 dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 3000;
 
+app.post ('/send-test-email', async (req, res) => {
+  const { email, subject, text} = req.body;
+
+  if (!email || !subject || !text) {
+    return res.status(404).send('Invalid email');
+  } 
+  try {
+    const result = await sendEmail(email, subject, text);
+        res.status(200).send(result);
+    } catch (error) {
+        res.status(500).send('Error sending email');
+  }
+})
 const _dirname = path.resolve ();
 app.use(express.json());
 app.use (cors({origin:'*'}));
@@ -58,7 +69,7 @@ const swaggerOptions = {
     
   },
   apis: ['./routes/*.js'], 
-  
+
 
 };
 
@@ -70,6 +81,8 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
