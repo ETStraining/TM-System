@@ -72,7 +72,7 @@ router.get('/tickets/:id', getTicketById);
 
 /**
  * @swagger
- * /api/v1/tickets/{id}:
+ * /api/v1/tickets/tickets/{id}:
  *   put:
  *     summary: Update a ticket
  *     description: Update details of a specific ticket by its ID
@@ -122,7 +122,7 @@ router.put('/tickets/:id', authMiddleware, authorizeRole(['admin', 'support']), 
 
 /**
  * @swagger
- * /api/v1/tickets/{id}:
+ * /api/v1/tickets/tickets/{id}:
  *   delete:
  *     summary: Delete a ticket
  *     description: Remove a specific ticket by its ID
