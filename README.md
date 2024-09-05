@@ -1,18 +1,30 @@
-Ticket Management System - Backend (In Progress)
+Ticket Management System - Backend
 
 Overview
 
-The Ticket Management System is a backend application currently under development. It aims to handle the creation, management, and tracking of support tickets. The system is being built using Node.js with Express as the server framework and MongoDB as the database. Once completed, it will provide RESTful API endpoints for managing tickets, users, and other related entities.
+The backend of the Ticket Management System provides a robust API for managing support tickets. It includes functionality for user authentication, ticket management, and administrative statistics.
 
-Current Status
-This project is currently under construction. Features are being implemented iteratively, and the codebase is subject to frequent changes.Features
+Features
 
-Planned Features
+* User Authentication: Secure user sign-up, login, and role management.
+* Ticket Operations: Create, update, and retrieve tickets with various statuses (new, on-going, resolved).
+* Admin Dashboard: Retrieve statistics on ticket counts and recent activities.
+* Email Notifications: Automated email updates for ticket status changes.
 
-* User Authentication: Users can sign up, log in, and manage their sessions with JWT-based authentication.
-* Ticket Management: Create, update, delete, and view tickets. Assign tickets to users and track their status.
-* Role-Based Access Control: Different levels of access for administrators and regular users.
-* Validation: Input validation to ensure data integrity.
-* Error Handling: Centralized error handling for cleaner and more maintainable code.
-* Environment Configuration: Manage environment variables using dotenv.
 
+Technologies Used
+
+* Node.js: JavaScript runtime for building the server.
+* Express.js: Web framework for building the API.
+* MongoDB: NoSQL database for storing tickets and user data.
+* Mongoose: ODM for interacting with MongoDB.
+* Nodemailer: For sending email notifications.
+
+Getting Started
+
+Prerequisites
+Node.js 
+MongoDB (or a MongoDB Atlas account)
+Nodemailer for email notifications
+
+Our APIs was hosted at: https://tm-system-1.onrender.com/api-docs/#/
