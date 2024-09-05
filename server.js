@@ -54,6 +54,11 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'API documentation for the Ticket Management System',
     },
+    "security": [
+      {
+        "BearerAuth": []
+      }
+    ],
     servers: [
       {
         url: 'http://localhost:3000',

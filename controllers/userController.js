@@ -90,7 +90,7 @@ export const LogIn = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, email: user.Email },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '100hrs' }
     );
 
     // Check if the user is an admin
