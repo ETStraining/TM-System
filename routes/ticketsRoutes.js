@@ -13,7 +13,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * api/v1/tickets:
+ * /api/v1/tickets/createTicket:
  *   post:
  *     summary: Create a new ticket
  *     description: Create a new ticket with the provided details
@@ -49,7 +49,7 @@ router.post('/createTicket', authMiddleware, createTicket);
 
 /**
  * @swagger
- * api/v1/tickets/{id}:
+ * /api/v1/tickets/tickets/{id}:
  *   get:
  *     summary: Get a ticket by ID
  *     description: Retrieve details of a specific ticket by its ID
@@ -72,7 +72,7 @@ router.get('/tickets/:id', getTicketById);
 
 /**
  * @swagger
- * api/v1/tickets/{id}:
+ * /api/v1/tickets/{id}:
  *   put:
  *     summary: Update a ticket
  *     description: Update details of a specific ticket by its ID
@@ -122,7 +122,7 @@ router.put('/tickets/:id', authMiddleware, authorizeRole(['admin', 'support']), 
 
 /**
  * @swagger
- * api/v1/tickets/{id}:
+ * /api/v1/tickets/{id}:
  *   delete:
  *     summary: Delete a ticket
  *     description: Remove a specific ticket by its ID
@@ -145,7 +145,7 @@ router.delete('/tickets/:id', authMiddleware, authorizeRole(['admin', 'support']
 
 /**
  * @swagger
- * api/v1/tickets:
+ * /api/v1/tickets:
  *   get:
  *     summary: Get all tickets
  *     description: Retrieve a list of all tickets with optional filters
