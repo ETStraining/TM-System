@@ -12,23 +12,25 @@ import sendEmail from './middlewares/sendEmail.js';
 dotenv.config();
 const app = express();
 
-app.post ('/send-test-email', async (req, res) => {
-  const { email, subject, text} = req.body;
+app.post('/send-test-email', async (req, res) => {
+  const { email, subject, text } = req.body;
 
   if (!email || !subject || !text) {
-    return res.status(404).send('Invalid email');
-  } 
+    return res.status(400).send('Invalid email or missing fields');
+  }
+
   try {
     const result = await sendEmail(email, subject, text);
-        res.status(200).send(result);
-    } catch (error) {
-        res.status(500).send('Error sending email');
+    res.status(200).send(result);
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).send('Error sending email');
   }
-})
-const _dirname = path.resolve ();
+});
+
 app.use(express.json());
-app.use (cors({origin:'*'}));
-app.use(bodyParser.json());
+app.use(cors({ origin: '*' }));
+
 console.log('DATABASE URI:', process.env.DATABASE); // Log MongoDB URI
 
 mongoose.connect(process.env.DATABASE)
@@ -43,21 +45,19 @@ app.use((req, res, next) => {
 
 // API routes
 app.use('/api/v1', allRoutes);
-// app.use('/api/v1/auth', authRoutes);
 
 // Swagger setup
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      
       title: 'Ticket Management System API',
       version: '1.0.0',
       description: 'API documentation for the Ticket Management System',
     },
-    "security": [
+    security: [
       {
-        "BearerAuth": []
+        bearerAuth: []
       }
     ],
     servers: [
@@ -65,18 +65,13 @@ const swaggerOptions = {
         url: 'http://localhost:3000',
         description: 'Development server',
       },
-     {
-       url: 'https://tm-system-1.onrender.com',
-       description: 'Production server',
-     } 
-      
+      {
+        url: 'https://tm-system-1.onrender.com',
+        description: 'Production server',
+      }
     ]
-    
-    
   },
-  apis: ['./routes/*.js'], 
-
-
+  apis: ['./routes/*.js'],
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
@@ -86,7 +81,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

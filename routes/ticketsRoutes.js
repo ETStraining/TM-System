@@ -13,7 +13,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/tickets/createTicket:
+ * /api/v1/tickets:
  *   post:
  *     summary: Create a new ticket
  *     description: Create a new ticket with the provided details
@@ -46,12 +46,11 @@ const router = express.Router();
  *       400:
  *         description: Bad request
  */
-
-router.post('/createTicket', authMiddleware, createTicket);
+router.post('/', authMiddleware, createTicket);
 
 /**
  * @swagger
- * /api/v1/tickets/tickets/{id}:
+ * /api/v1/tickets/{id}:
  *   get:
  *     summary: Get a ticket by ID
  *     description: Retrieve details of a specific ticket by its ID
@@ -70,14 +69,16 @@ router.post('/createTicket', authMiddleware, createTicket);
  *       404:
  *         description: Ticket not found
  */
-router.get('/tickets/:id', getTicketById);
+router.get('/:id', authMiddleware, getTicketById);
 
 /**
  * @swagger
- * /api/v1/tickets/tickets/{id}:
+ * /api/v1/tickets/{id}:
  *   put:
  *     summary: Update a ticket
  *     description: Update details of a specific ticket by its ID
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Tickets
  *     parameters:
@@ -103,9 +104,6 @@ router.get('/tickets/:id', getTicketById);
  *                 type: string
  *               dropOffLocation:
  *                 type: string
- *               createdBy:
- *                 type: string
- *                 format: uuid
  *               status:
  *                 type: string
  *                 enum: [New, On-Going, Resolved, Closed]
@@ -120,14 +118,16 @@ router.get('/tickets/:id', getTicketById);
  *       404:
  *         description: Ticket not found
  */
-router.put('/tickets/:id', authMiddleware, authorizeRole(['admin', 'support']), updateTicket);
+router.put('/:id', authMiddleware, authorizeRole(['admin', 'support']), updateTicket);
 
 /**
  * @swagger
- * /api/v1/tickets/tickets/{id}:
+ * /api/v1/tickets/{id}:
  *   delete:
  *     summary: Delete a ticket
  *     description: Remove a specific ticket by its ID
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Tickets
  *     parameters:
@@ -143,7 +143,7 @@ router.put('/tickets/:id', authMiddleware, authorizeRole(['admin', 'support']), 
  *       404:
  *         description: Ticket not found
  */
-router.delete('/tickets/:id', authMiddleware, authorizeRole(['admin', 'support']), deleteTicket);
+router.delete('/:id', authMiddleware, authorizeRole(['admin', 'support']), deleteTicket);
 
 /**
  * @swagger
@@ -151,12 +151,14 @@ router.delete('/tickets/:id', authMiddleware, authorizeRole(['admin', 'support']
  *   get:
  *     summary: Get all tickets
  *     description: Retrieve a list of all tickets with optional filters
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Tickets
  *     responses:
  *       200:
  *         description: List of tickets
  */
-router.get('/tickets', authMiddleware, getAllTickets);
+router.get('/', authMiddleware, getAllTickets);
 
 export default router;
