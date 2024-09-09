@@ -28,6 +28,7 @@ app.post ('/send-test-email', async (req, res) => {
 const _dirname = path.resolve ();
 app.use(express.json());
 app.use (cors({origin:'*'}));
+app.use(bodyParser.json());
 console.log('DATABASE URI:', process.env.DATABASE); // Log MongoDB URI
 
 mongoose.connect(process.env.DATABASE)
