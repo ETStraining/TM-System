@@ -17,6 +17,8 @@ const router = express.Router();
  *   post:
  *     summary: Create a new ticket
  *     description: Create a new ticket with the provided details
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Tickets
  *     requestBody:
@@ -35,7 +37,6 @@ const router = express.Router();
  *                 type: string
  *               dropOffLocation:
  *                 type: string
- *            
  *               dueDate:
  *                 type: string
  *                 format: date
@@ -45,6 +46,7 @@ const router = express.Router();
  *       400:
  *         description: Bad request
  */
+
 router.post('/createTicket', authMiddleware, createTicket);
 
 /**
